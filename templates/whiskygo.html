@@ -1,0 +1,22 @@
+{% extends "master.html" %}
+{% block title %}Results{% endblock %}
+
+{% block message %}
+    <hr />              <!--  horizontal rule -->
+    <div class="row">
+        <div class="col-lg-4">
+            <h4 class="text-primary">Nose:</h4>
+            <p>{{nosequery}}</p>
+        </div>
+        <div class="col-lg-4">
+            <h4 class="text-primary">Palate:</h4>
+            <p>{{palatequery}}</p>
+        </div>
+        <div class="col-lg-4">
+            <h4 class="text-primary">Finish:</h4>
+            <p>{{finishquery}}</p>
+        </div>
+    </div>
+    <h2 class = "text-center">My guess is {{guess}}.</h2>
+
+{% endblock %}
