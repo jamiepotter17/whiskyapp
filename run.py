@@ -49,13 +49,13 @@ def tokenise_and_stem_text(text):
 
     return lemmas
 
-def getnose(array):
+def __main__.getnose(array):
     return array[:,0]
 
-def getpalate(array):
+def __main__.getpalate(array):
     return array[:,1]
 
-def getfinish(array):
+def __main__.getfinish(array):
     return array[:,2]
 
 # load data and models
