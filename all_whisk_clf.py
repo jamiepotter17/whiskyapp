@@ -48,4 +48,4 @@ def getfinish(array):
 
 def get_whisky_classifier():
     whiskyclassifier = joblib.load("whisky_classifier.pkl")
-    return whisky_classifier
+    return whiskyclassifier
