@@ -15,6 +15,7 @@ from plotly.graph_objs import Bar
 import joblib
 
 from graphs import get_graphs
+from all_whisk_clf import get_whisky_classifier
 
 whiskyapp = Flask(__name__)
 
@@ -60,10 +61,8 @@ def getfinish(array):
 
 # load data and models
 df = pd.read_csv('branded.csv', index_col = 'Unnamed: 0')
-whiskyclassifier = joblib.load("whisky_classifier.pkl")
+whiskyclassifier = get_whisky_classifier()
 #maltclassifier = joblib.load("malt_classifier.pkl")
-
-
 
 # index webpage displays visuals and receives user input text for model
 @whiskyapp.route('/')
