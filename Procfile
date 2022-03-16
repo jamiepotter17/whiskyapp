@@ -1,1 +1,1 @@
-web: gunicorn whiskyapp
+web: gunicorn run:whiskyapp
