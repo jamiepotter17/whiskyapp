@@ -1,1 +1,1 @@
-web: gunicorn whiskyapp:app
+web: gunicorn whiskyapp
