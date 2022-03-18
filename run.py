@@ -12,6 +12,9 @@ from nltk.stem.porter import PorterStemmer
 from flask import Flask
 from flask import render_template, request, jsonify
 from plotly.graph_objs import Bar
+from plotly.graph_objs import Bar, Scatter3d, Layout
+from plotly.graph_objs.layout import Scene
+from plotly.graph_objs.layout.scene import XAxis, YAxis, ZAxis
 import joblib
 
 from graphs import get_graphs
@@ -62,7 +65,8 @@ def getfinish(array):
 # load data and models
 df = pd.read_csv('branded.csv', index_col = 'Unnamed: 0')
 whiskyclassifier = get_whisky_classifier()
-#maltclassifier = joblib.load("malt_classifier.pkl")
+
+distances_df = pd.read_csv('distances.csv', index_col = ['brand','distance_type'])
 
 # index webpage displays visuals and receives user input text for model
 @whiskyapp.route('/')
@@ -80,8 +84,8 @@ def index():
     return render_template('master.html', ids=ids, graphJSON=graphJSON)
 
 # web page that handles user query and displays model results
-@whiskyapp.route('/whiskygo')
-def whiskygo():
+@whiskyapp.route('/go')
+def go():
     # save user input in query
     nosequery = request.args.get('nosequery', '')
     palatequery = request.args.get('palatequery', '')
@@ -89,24 +93,51 @@ def whiskygo():
 
     # Get the whiskyclassifier to produce its guess
     # Hacky code here unfortunately because I wrote the pipeline
-    # so it would expect a two-D array. Hence the empty row that
+    # so it would expect a 2-D array. Hence the empty row that
     # does absolutely nothing.
     test = np.array([['','',''],[nosequery, palatequery, finishquery]])
     guess = whiskyclassifier.predict(test)[1]
 
-    # This will render the gowhisky.html Please see that file.
+    graph_data = Scatter3d(
+    x=distances_df.loc[(guess,'nose_d')].values,
+    y=distances_df.loc[(guess,'palate_d')].values,
+    z=distances_df.loc[(guess,'finish_d')].values,
+    hoverinfo='text',
+    hovertext = distances_df.loc[(guess,'nose_d')].index,
+    mode='markers+text',
+    marker=dict(size=10,
+                color=distances_df.loc[(guess,'overall_d')].values,
+                colorscale='sunset',
+                opacity=0.7))
+
+    graph_layout = Layout(
+    title = dict(text='Whiskies Similar to '+guess, xanchor='center', x=0.5),
+    width=1200,
+    height= 750,
+    scene = Scene(
+        xaxis=XAxis(title='Nose', showticklabels=False), yaxis=YAxis(title='Palate', showticklabels=False),
+        zaxis=ZAxis(title='Finish', showticklabels=False),
+        camera = dict(eye = dict(x=1.2, y=-1.2, z=1.2))))
+
+
+    data = { "data" : [graph_data], "layout": graph_layout}
+
+    distance_graph = json.dumps(data, cls=plotly.utils.PlotlyJSONEncoder)
+
+    # This will render the go.html Please see that file.
     return render_template(
-        'whiskygo.html',
+        'go.html',
         nosequery=nosequery,
         palatequery=palatequery,
         finishquery=finishquery,
-        guess=guess
+        guess=guess,
+        distance_graph=distance_graph
     )
 
 
-#def main():
-#    whiskyapp.run(host='0.0.0.0', port=3000, debug=True)
+def main():
+    whiskyapp.run(host='0.0.0.0', port=3000, debug=True)
 
 
-#if __name__ == '__main__':
-#    main()
+if __name__ == '__main__':
+    main()

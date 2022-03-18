@@ -19,4 +19,12 @@
     </div>
     <h2 class = "text-center">My guess is {{guess}}.</h2>
 
+    <script type="text/javascript">
+        const graphs = {{graphJSON | safe}};
+        const ids = {{ids | safe}};
+        {
+        Plotly.plot(ids[0], distance_graph.data, distance_graph.layout);
+        }
+    </script>
+
 {% endblock %}
