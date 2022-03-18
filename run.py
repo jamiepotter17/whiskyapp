@@ -11,13 +11,13 @@ from nltk.stem.porter import PorterStemmer
 
 from flask import Flask
 from flask import render_template, request, jsonify
-from plotly.graph_objs import Bar
+
 from plotly.graph_objs import Bar, Scatter3d, Layout
 from plotly.graph_objs.layout import Scene
 from plotly.graph_objs.layout.scene import XAxis, YAxis, ZAxis
 import joblib
 
-from graphs import get_graphs
+from graphs import get_dataset_graphs, get_distance_graph
 from all_whisk_clf import get_whisky_classifier
 
 whiskyapp = Flask(__name__)
@@ -74,7 +74,7 @@ distances_df = pd.read_csv('distances.csv', index_col = ['brand','distance_type'
 def index():
 
     # Gets graphs from graphs.py. Go there to edit.
-    graphs = get_graphs(df)
+    graphs = get_dataset_graphs(df)
 
     # encode plotly graphs in JSON
     ids = ["graph-{}".format(i) for i, _ in enumerate(graphs)]
@@ -98,33 +98,12 @@ def go():
     test = np.array([['','',''],[nosequery, palatequery, finishquery]])
     guess = whiskyclassifier.predict(test)[1]
 
-    graph_data = Scatter3d(
-    x=distances_df.loc[(guess,'nose_d')].values,
-    y=distances_df.loc[(guess,'palate_d')].values,
-    z=distances_df.loc[(guess,'finish_d')].values,
-    hoverinfo='text',
-    hovertext = distances_df.loc[(guess,'nose_d')].index,
-    mode='markers+text',
-    marker=dict(size=10,
-                color=distances_df.loc[(guess,'overall_d')].values,
-                colorscale='sunset',
-                opacity=0.7))
-
-    graph_layout = Layout(
-    title = dict(text='Whiskies Similar to '+guess, xanchor='center', x=0.5),
-    width=1200,
-    height= 750,
-    scene = Scene(
-        xaxis=XAxis(title='Nose', showticklabels=False), yaxis=YAxis(title='Palate', showticklabels=False),
-        zaxis=ZAxis(title='Finish', showticklabels=False),
-        camera = dict(eye = dict(x=1.2, y=-1.2, z=1.2))))
-
-
+    # get distances_graph and encode to JSON object ready to send to template
+    graph_data, graph_layout = get_distance_graph(distances_df, guess)
     data = { "data" : [graph_data], "layout": graph_layout}
-
     distance_graph = json.dumps(data, cls=plotly.utils.PlotlyJSONEncoder)
 
-    # This will render the go.html Please see that file.
+    # This will render the go.html. Please see that file.
     return render_template(
         'go.html',
         nosequery=nosequery,
@@ -134,10 +113,8 @@ def go():
         distance_graph=distance_graph
     )
 
-
 def main():
     whiskyapp.run(host='0.0.0.0', port=3000, debug=True)
-
 
 if __name__ == '__main__':
     main()
