@@ -51,7 +51,7 @@ In order to address any ethical concerns about the use of data, I note the follo
 * ./templates/master.html - the landing page of the app where you enter your notes. Also displays the graphs showing summary info about training set.
 * ./templates/go.html - will display the result of the model prediction and then a 3d scatterplot showing other whiskies with (nose distance, palate distance, finish distance) coordinates so you can identify similar whiskies.
 * graphs.py - module that contains the visualisations to be loaded in.
-* load_whisky_clf.py - module that contains function for loading in the whisky classifier model.
+* all_whisk_clf.py - module that contains function for loading in the whisky classifier model.
 * nltk.txt - instruction to heroku to download stopwords from nltk.
 * Procfile - instruction to heroku so it knows what to run.
 * requirements.txt - contains only the requirements for a minimal virtual environment needed to run the app.
