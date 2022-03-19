@@ -22,8 +22,7 @@ def get_dataset_graphs(df):
                 'title': dict(text ='Regions/Types in Training Data',
                               xanchor='center', x=0.5),
                 'yaxis': {'title': "Frequency"},
-                'xaxis': {'title': "Region/Type"},
-                'plot_bgcolor': 'rgb(235,255,255)'
+                'plot_bgcolor': 'rgb(245,245,235)'
                 }
 
     top10_brands = list(df['brand'].value_counts().head(10).index.str.title())
@@ -32,15 +31,14 @@ def get_dataset_graphs(df):
     graph_two_data = [Bar(
                     x=top10_brands,
                     y=top10_brands_counts,
-                    marker={'color':'rgb(180,90,0)'}
+                    marker={'color':'rgb(210,130,90)'}
                 )]
 
     graph_two_layout = {
                 'title': dict(text ='Most Reviewed Brands in Training Data',
                               xanchor='center', x=0.5),
                 'yaxis': {'title': "Frequency"},
-                'xaxis': {'title': "Brand"},
-                'plot_bgcolor': 'rgb(235,255,255)'
+                'plot_bgcolor': 'rgb(245,245,235)'
                 }
     graphs=[]
     graphs.append(dict(data=graph_one_data, layout=graph_one_layout))
@@ -72,8 +70,6 @@ def get_distance_graph(distances_df, guess):
 
     graph_layout = Layout(
     title = dict(text='Whiskies Similar to '+guess, xanchor='center', x=0.5),
-    width=1200,
-    height= 750,
     scene = Scene(
         xaxis=XAxis(title='Nose', showticklabels=False), yaxis=YAxis(title='Palate', showticklabels=False),
         zaxis=ZAxis(title='Finish', showticklabels=False),

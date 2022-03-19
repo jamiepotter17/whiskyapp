@@ -18,7 +18,7 @@ from plotly.graph_objs.layout.scene import XAxis, YAxis, ZAxis
 import joblib
 
 from graphs import get_dataset_graphs, get_distance_graph
-from all_whisk_clf import get_whisky_classifier
+from load_whisky_clf import get_whisky_classifier
 
 whiskyapp = Flask(__name__)
 
@@ -63,6 +63,7 @@ def getfinish(array):
     return array[:,2]
 
 # load data and models
+# n.b. whisky_classifier.pkl must be version created by running get_whisky_clf.py in whisky_project, not from within Jupyter Notebook. This is because the pickle file needs to not have any __main__ stuff in it. 
 df = pd.read_csv('branded.csv', index_col = 'Unnamed: 0')
 whiskyclassifier = get_whisky_classifier()
 
